@@ -1,0 +1,52 @@
+<html>
+<head>
+    <title>Sample Upload File</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+</head>
+    <body>
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <h1>File to Base64</h1>
+            </div>    
+            <div class="row justify-content-md-center">
+                <div class="col col-md-auto" style="margin-top: 10px">
+                    <input id="files" type="file" />
+                    <button type="button" class="btn btn-danger btn-sm" onclick="show()">Show</button>
+                </div>    
+            </div>    
+            <div class="row justify-content-md-center" style="margin-top: 10px">
+                <div class="col col-md-auto">
+                    <textarea id="base64_text" cols="100"></textarea>
+                </div>    
+            </div>    
+        </div>   
+        <script language="javascript" type="text/javascript">
+            function show() {
+
+                if(document.getElementById("files").files.length == 0) return;
+
+                var fileData = new Blob([document.getElementById("files").files[0]]);
+                var promise = new Promise(function (resolve) {
+                    var reader = new FileReader();
+                    reader.readAsArrayBuffer(fileData);
+                    reader.onload = function() {
+                        var arrayBuffer = reader.result
+                        var bytes = new Uint8Array(arrayBuffer);
+                        resolve(bytes);
+                    }
+                });
+                promise.then(function(data) {
+                    
+                    var stringData = "";
+                    
+                    for (var i = 0; i < data.length; i++) {
+                        stringData += String.fromCharCode(data[i]);
+                    }
+                    
+                    document.getElementById("base64_text").value = btoa(stringData);
+                    document.getElementById("base64_text").rows = (data.length/document.getElementById("base64_text").cols);
+                });
+            }
+        </script> 
+    </body>
+</html>
